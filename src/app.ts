@@ -1,5 +1,7 @@
 import * as express from 'express';
 import * as cors from "cors";
+import * as compression from "compression";
+import * as bodyParser from "body-parser";
 
 class App {
   public express;
@@ -23,6 +25,12 @@ class App {
 
     this.router.use(cors(options));
     this.router.options("*", cors(options));
+    this.express.use(compression());
+    this.express.use(bodyParser.json());
+    this.express.use(bodyParser.urlencoded({ extended: true }));
+    this.express.use((err, req, res, next) => {
+      res.status(500).send(err.toString());
+    })
   }
 
   private mountRoutes(): void {
@@ -34,8 +42,8 @@ class App {
       res.json({ message: 'Welcome Home!' });
     });
 
-    this.express.use('/', this.router);
+    this.express.use('/api/home', this.router);
   }
 }
 
-module.exports= new App().express;
+module.exports = new App().express;
