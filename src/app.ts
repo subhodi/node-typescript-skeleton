@@ -1,7 +1,9 @@
 import * as express from 'express';
-import * as cors from "cors";
-import * as compression from "compression";
-import * as bodyParser from "body-parser";
+import * as cors from 'cors';
+import * as compression from 'compression';
+import * as bodyParser from 'body-parser';
+import * as mongoose from 'mongoose';
+import * as dotenv from 'dotenv';
 
 class App {
   public express;
@@ -12,19 +14,30 @@ class App {
     this.router = express.Router();
     this.middleWare();
     this.mountRoutes();
+
+    // Load enviromnet variables to process.env from .env file
+    dotenv.config({ path: '.env' });
+
+    // Connect to MongoDB
+    const mongoUrl = process.env.MONGODB_URI;
+    mongoose.connect(mongoUrl).then(() => {
+      console.log('MongoDB connection established ' + mongoUrl);
+    }, ).catch(err => {
+      console.log('MongoDB connection error. Please make sure MongoDB is running. ' + err);
+    });
   }
 
   private middleWare(): void {
     const options: cors.CorsOptions = {
-      allowedHeaders: ["Origin", "X-Requested-With", "Content-Type", "Accept", "X-Access-Token"],
+      allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept', 'X-Access-Token'],
       credentials: true,
-      methods: "GET,HEAD,OPTIONS,PUT,PATCH,POST,DELETE",
-      origin: "*",
+      methods: 'GET,HEAD,OPTIONS,PUT,PATCH,POST,DELETE',
+      origin: '*',
       preflightContinue: false
     };
 
     this.router.use(cors(options));
-    this.router.options("*", cors(options));
+    this.router.options('*', cors(options));
     this.express.use(compression());
     this.express.use(bodyParser.json());
     this.express.use(bodyParser.urlencoded({ extended: true }));
