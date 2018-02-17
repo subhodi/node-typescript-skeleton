@@ -5,6 +5,8 @@ import * as bodyParser from 'body-parser';
 import * as mongoose from 'mongoose';
 import * as dotenv from 'dotenv';
 
+import * as userControlller from './controllers/user';
+
 class App {
   public express;
   public router;
@@ -47,15 +49,11 @@ class App {
   }
 
   private mountRoutes(): void {
+    this.router.get('/user', userControlller.get);
+    this.router.get('/user/:name', userControlller.get);
+    this.router.post('/user', userControlller.insert);
 
-    this.router.get('/', (req, res) => {
-      res.json({ message: 'Hello World!' });
-    });
-    this.router.post('/home', (req, res) => {
-      res.json({ message: 'Welcome Home!' });
-    });
-
-    this.express.use('/api/home', this.router);
+    this.express.use('/api', this.router);
   }
 }
 
