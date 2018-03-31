@@ -57,4 +57,4 @@ class App {
   }
 }
 
-module.exports = new App().express;
+export default new App().express;
