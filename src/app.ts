@@ -5,7 +5,7 @@ import * as bodyParser from 'body-parser';
 import * as mongoose from 'mongoose';
 import * as dotenv from 'dotenv';
 
-import * as userControlller from './controllers/user';
+import * as userControlller from './controllers/user/user.controller';
 
 class App {
   public express;
@@ -21,7 +21,7 @@ class App {
     dotenv.config({ path: '.env' });
 
     // Connect to MongoDB
-    const mongoUrl = process.env.MONGODB_URI;
+    const mongoUrl = process.env.MONGODB_URI ? process.env.MONGODB_URI : 'mongodb://127.0.0.1:27017'; // If nt specified, connect to local service
     mongoose.connect(mongoUrl).then(() => {
       console.log('MongoDB connection established ' + mongoUrl);
     }, ).catch(err => {
